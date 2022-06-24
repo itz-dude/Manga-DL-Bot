@@ -1,0 +1,6 @@
+pyrogram==1.4.16
+tgcrypto
+aiohttp
+bs4
+python-dotenv
+pykeyboard
