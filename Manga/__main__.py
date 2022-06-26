@@ -91,3 +91,62 @@ async def _about(_, message):
 @app.on_callback_query(filters.regex("homeback"))
 async def _hback(_, query):
   return await query.message.edit_text(START_MSG, reply_markup=START_MARKUP)
+
+
+
+@app.on_message(get_command("search"))
+async def searc(_, message):
+  try:
+    q = message.text.split(" ", maxsplit=1)[1]
+  except IndexError:
+    return await message.reply_text("**Usage**\n\n× /search One Piece")
+  res = search(q)
+  if isinstance(res, str):
+    return await message.reply_text("No Results Found")
+  else:
+    if len(res) < 1:
+      return await message.reply_text("No Results Found")
+    else:
+      key = searchkeyboard(res)
+      text = f"**Showing Results for {q}**\n\n`Click on Button To Know First & Last Chapter Number`"
+      return await message.reply_text(text=text, reply_markup=key)
+
+
+@app.on_callback_query(filters.regex("mangainfo"))
+async def chpnm(_, query):
+  q = query.data.replace("mangainfo", "")
+  res = detail(q)
+  if isinstance(res, str):
+    return await query.message.edit_text("An Exception Occured Report At @TechZBots_Support")
+  else:
+    if len(res['chapter']) < 1:
+      return await query.message.edit_text("No Results For This Manga ")
+    else:
+      ch = chapkeyboard(res['chapter'])
+      text = f"Chapters For {q.replace('-', ' ')}"
+      return await query.message.edit_text(text=text, reply_markup=ch)
+
+@app.on_message(get_command("manga"))
+async def gib_chap(_, message):
+  try:
+    args = (message.text.split(" ", maxsplit=1)[1]).split(" ")
+  except:
+    return await message.reply_text("**Usage**:\n\n× /manga <manga> <chapter>")
+  if len(args) <= 1:
+    return await message.reply_text("**Usage**:\n\n× /manga <manga> <chapter>")
+  else:
+    if not isinstance(args[-1], int):
+      return await message.reply_text("**Usage**:\n\n× /manga <manga> <chapter>")
+    else:
+      try:
+        man = " ".join(args[:-1])
+        chap = args[-1]
+        res = detail(search(man)[0]['mangaid'])['chapter']
+        for x in res:
+          if x['num'] == chap:
+            title, chap = telegra(x['url'])
+            return await message.reply_text(f"[{title}]({chap})")
+          else:
+            pass
+      except:
+        return await message.reply_text("An Exception Occurred Report at @TechZBots_Support")
