@@ -1,7 +1,7 @@
 from . import app, get_command, BOT_NAME, BOT_ID
 from pyrogram import __version__
 from pyrogram import filters, idle
-from .utils import import *
+from .utils import  *
 from pykeyboard import InlineKeyboard, InlineButton
 
 HELP_MSG = f"**This is {}'s Help Menu**\n» `/search <manga>`: Returns Search Results For Manga\n» `/manga <name> <chapter number>`: Returns Chapter of Manga"
